@@ -1,0 +1,16 @@
+{
+  "name": "crypto_backend",
+  "version": "1.0.0",
+  "description": "Crypto backend service",
+  "author": "Dario Knezović <dario.knezovich@gmail.com>",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start:dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.16.1"
+  }
+}
