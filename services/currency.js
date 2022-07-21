@@ -2,7 +2,6 @@ const axios = require('axios');
 const api = require('../config/api');
 
 const fetchCurrencyRatesFromApi = () => {
-    console.log("HEEEJ");
     const options = {
         method: 'GET',
         url: api.RAPID_API_BASE_URL + '/rates',

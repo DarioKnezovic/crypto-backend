@@ -1,5 +1,7 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
-    TEST: 'Test constant!',
     PORT: 3000,
     HOST: '0.0.0.0'
 }
