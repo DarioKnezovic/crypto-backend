@@ -13,17 +13,17 @@ const fetchCurrencyRatesFromApi = () => {
 
     axios.request(options)
         .then((response) => {
-            console.log(response.data)
+            console.log(response.data);
         })
         .catch((error) => {
-            console.error(error)
+            console.error(error);
         })
     return setInterval(fetchCurrencyRatesFromApi, api.API_CALL_INTERVAL);
-}
+};
 
 const getCurrencyRates = () => {
     fetchCurrencyRatesFromApi();
-}
+};
 
 module.exports = {
     getCurrencyRates: getCurrencyRates,

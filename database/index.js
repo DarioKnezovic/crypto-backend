@@ -1,13 +1,17 @@
 const mysql = require('mysql');
 const database = require('../config/database');
-const currencyRates = require('./currency-rates.js');
+
+const pool = mysql.createPool({
+     connectionLimit : 10,
+     host            : database.HOST,
+     port            : database.PORT,
+     user            : database.USER,
+     password        : database.PASSWORD,
+     database        : database.NAME
+});
 
 module.exports = {
-    pool: mysql.createPool({
-        connectionLimit : 10,
-        host            : database.HOST,
-        user            : database.USER,
-        password        : database.PASSWORD,
-        database        : database.NAME
-    }),
+    getConnection: (callback) => {
+        return pool.getConnection(callback);
+    }
 }
