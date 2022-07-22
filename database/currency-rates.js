@@ -1,5 +1,10 @@
 let db = require('./index.js');
 
+/*
+ * Migrating table if not exists.
+ *
+ * @return void
+ */
 const migrateTable = () => {
     const query = `CREATE TABLE IF NOT EXISTS currency_rates (
         time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
