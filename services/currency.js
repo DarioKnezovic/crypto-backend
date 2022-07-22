@@ -1,6 +1,15 @@
 const axios = require('axios');
 const api = require('../config/api');
+const currencyRates = require('../database/currency-rates');
 
+const ETHEREUM = 'ETH';
+const BITCOIN = 'BTC';
+
+/*
+ * Fetch currency rates from RAPID API.
+ *
+ * @return void
+ */
 const fetchCurrencyRatesFromApi = () => {
     const options = {
         method: 'GET',
@@ -13,7 +22,7 @@ const fetchCurrencyRatesFromApi = () => {
 
     axios.request(options)
         .then((response) => {
-            console.log(response.data);
+            handleCurrencyRatesData(response.data);
         })
         .catch((error) => {
             console.error(error);
@@ -21,10 +30,28 @@ const fetchCurrencyRatesFromApi = () => {
     return setInterval(fetchCurrencyRatesFromApi, api.API_CALL_INTERVAL);
 };
 
-const getCurrencyRates = () => {
-    fetchCurrencyRatesFromApi();
-};
+/*
+ * Receive response data from API and prepare it for inserting in database.
+ * @param data Object
+ *
+ * @return void
+ */
+const handleCurrencyRatesData = (data) => {
+    if (!data) return;
+
+    let databaseData = {};
+    databaseData.base = data.base ?? '';
+
+    if (data.rates) {
+        databaseData.currency_one_name = data.rates[BITCOIN] ? BITCOIN : '';
+        databaseData.currency_one_rate = data.rates[BITCOIN] ?? 0;
+        databaseData.currency_two_name = data.rates[ETHEREUM] ? ETHEREUM : '';
+        databaseData.currency_two_rate = data.rates[ETHEREUM] ?? 0;
+    }
+
+    currencyRates.insertCurrencyRate(databaseData);
+}
 
 module.exports = {
-    getCurrencyRates: getCurrencyRates,
+    fetchCurrencyRatesFromApi: fetchCurrencyRatesFromApi,
 }
