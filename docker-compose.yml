@@ -11,6 +11,8 @@ services:
       - ${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}
     volumes:
       - db:/var/lib/mysql
+    networks:
+      - app-network
   crypto-backend:
     container_name: crypto-backend-first-service
     build:
@@ -20,11 +22,16 @@ services:
         - PORT=${PORT}
     volumes:
       - .:/src
+    networks:
+      - app-network
     command: npm run start:dev
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: development
       MYSQLDB_HOST: mysqldb
+networks:
+  app-network:
+    driver: bridge
 volumes:
   db:
