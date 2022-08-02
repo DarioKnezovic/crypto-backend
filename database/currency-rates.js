@@ -42,7 +42,25 @@ const insertCurrencyRate = (data) => {
     })
 }
 
+/*
+ * Get the latest currency rate from database
+ * @param callback Function
+ *
+ * @return object
+ */
+const getLatestCurrencyRates = (callback) => {
+    const selectQuery = `SELECT * FROM currency_rates ORDER BY time DESC LIMIT 1`;
+
+    db.getConnection((err, conn) => {
+        conn.query(selectQuery, (error, result) => {
+            if (error) throw error;
+            return callback(result[0]);
+        })
+    })
+}
+
 module.exports = {
     migrateTable,
-    insertCurrencyRate
+    insertCurrencyRate,
+    getLatestCurrencyRates
 }

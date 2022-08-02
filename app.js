@@ -2,21 +2,24 @@
 
 const express = require('express');
 const serverConfig = require('./config/server');
+const socketConfig = require('./config/socket');
 const http = require('http');
 const socketIO = require('socket.io');
 const currencyRates = require('./database/currency-rates');
 const currencyService = require('./services/currency');
+const currencyRatesSocket = require('./socket/currency-rates');
 
 // App
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, socketConfig.SERVER_OPTIONS);
 
-io.on('connection', () => {
+io.on(socketConfig.EVENTS.CONNECTION, (socket) => {
     console.log("[Socket.IO] Someone is connected!");
+    currencyRates.getLatestCurrencyRates(data => currencyRatesSocket.sendCurrencyRatesToClient(socket, data));
 });
 currencyRates.migrateTable();
-//currencyService.fetchCurrencyRatesFromApi()
+//currencyService.fetchCurrencyRatesFromApi() TODO: Uncomment this
 
 server.listen(serverConfig.PORT);
 console.log(`[INFO] Server is running on port: ${serverConfig.PORT}`);
