@@ -8,6 +8,7 @@ const socketIO = require('socket.io');
 const currencyRates = require('./database/currency-rates');
 const currencyService = require('./services/currency');
 const currencyRatesSocket = require('./socket/currency-rates');
+const migrations = require('./database/migrations');
 
 // App
 const app = express();
@@ -16,9 +17,13 @@ const io = socketIO(server, socketConfig.SERVER_OPTIONS);
 
 io.on(socketConfig.EVENTS.CONNECTION, (socket) => {
     console.log("[Socket.IO] Someone is connected!");
-    currencyRates.getLatestCurrencyRates(data => currencyRatesSocket.sendCurrencyRatesToClient(socket, data));
+    currencyRatesSocket.saveSocketClient(socket, () => {
+        currencyRates.getLatestCurrencyRates(data => currencyRatesSocket.sendCurrencyRatesToClient(data));
+        currencyRatesSocket.receiveSavedExchange();
+    })
 });
-currencyRates.migrateTable();
+
+migrations.migrateTables();
 //currencyService.fetchCurrencyRatesFromApi() TODO: Uncomment this
 
 server.listen(serverConfig.PORT);

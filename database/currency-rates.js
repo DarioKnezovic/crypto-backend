@@ -1,7 +1,7 @@
-let db = require('./index.js');
+const db = require('./index.js');
 
 /*
- * Migrating table if not exists.
+ * Migrating table 'currency_rates' if not exists.
  *
  * @return void
  */
@@ -17,6 +17,7 @@ const migrateTable = () => {
     )`;
 
     db.getConnection((err, conn) => {
+        if (err) throw err;
         conn.query(query, (error) => {
             if (error) throw error;
             console.log("[MySQL] Table currency_rates is migrated.")
@@ -35,6 +36,7 @@ const insertCurrencyRate = (data) => {
     VALUES ('${data.base}', '${data.currency_one_name}', ${data.currency_one_rate}, '${data.currency_two_name}', ${data.currency_two_rate})`;
 
     db.getConnection((err, conn) => {
+        if (err) throw err;
         conn.query(queryInsert, (error) => {
             if (error) throw error;
             console.log("[MySQL] Table currency_rates is updated with new value.")
@@ -52,6 +54,7 @@ const getLatestCurrencyRates = (callback) => {
     const selectQuery = `SELECT * FROM currency_rates ORDER BY time DESC LIMIT 1`;
 
     db.getConnection((err, conn) => {
+        if (err) throw err;
         conn.query(selectQuery, (error, result) => {
             if (error) throw error;
             return callback(result[0]);
