@@ -20,6 +20,7 @@ io.on(socketConfig.EVENTS.CONNECTION, (socket) => {
     currencyRatesSocket.saveSocketClient(socket, () => {
         currencyRates.getLatestCurrencyRates(data => currencyRatesSocket.sendCurrencyRatesToClient(data));
         currencyRatesSocket.receiveSavedExchange();
+        currencyRatesSocket.receiveOfferForAllExchanges();
     })
 });
 

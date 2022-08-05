@@ -8,11 +8,12 @@ const db = require('./index');
 const migrateTable = () => {
     const query = `CREATE TABLE IF NOT EXISTS exchange_history (
         exchange_id INT NOT NULL AUTO_INCREMENT,
-        time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         currency_from VARCHAR(20) NOT NULL,
         amount_one FLOAT NOT NULL,
         currency_to VARCHAR(20) NOT NULL,
         amount_two FLOAT NOT NULL,
+        type VARCHAR(20),
         PRIMARY KEY(exchange_id)
    )`;
 
@@ -50,8 +51,8 @@ const fetchAllExchanges = (callback) => {
  * @return void
  */
 const insertNewExchange = (data, callback) => {
-    const insertQuery = `INSERT INTO exchange_history (currency_from, amount_one, currency_to, amount_two)
-                        VALUES ('${data.currency_from}', ${data.amount_one}, '${data.currency_to}', ${data.amount_two})`;
+    const insertQuery = `INSERT INTO exchange_history (currency_from, amount_one, currency_to, amount_two, type)
+                        VALUES ('${data.currency_from}', ${data.amount_one}, '${data.currency_to}', ${data.amount_two}, 'Exchanged')`;
 
     db.getConnection((err, conn) => {
         if (err) throw err;

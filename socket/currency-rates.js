@@ -35,6 +35,18 @@ const receiveSavedExchange = () => {
     socketClient.on(socketConfig.EVENTS.SAVE_EXCHANGE, (data) => exchangeHistoryDB.insertNewExchange(data, sendHistoryOfExchanges))
 }
 
+/*
+ * Handle event when client want all exchanges history.
+ */
+const receiveOfferForAllExchanges = () => {
+    socketClient.on(socketConfig.EVENTS.GET_EXCHANGES_HISTORY, sendHistoryOfExchanges)
+}
+
+/*
+ * Send exchanges history to client.
+ *
+ * @return void
+ */
 const sendHistoryOfExchanges = () => {
     exchangeHistoryDB.fetchAllExchanges((data) => {
         socketClient.emit(socketConfig.EVENTS.EXCHANGES_HISTORY, data)
@@ -45,5 +57,6 @@ module.exports = {
     saveSocketClient,
     sendCurrencyRatesToClient,
     receiveSavedExchange,
-    sendHistoryOfExchanges
+    sendHistoryOfExchanges,
+    receiveOfferForAllExchanges
 }
