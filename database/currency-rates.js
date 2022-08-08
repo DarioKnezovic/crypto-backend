@@ -31,15 +31,16 @@ const migrateTable = () => {
  *
  * @return void
  */
-const insertCurrencyRate = (data) => {
-    const queryInsert = `INSERT INTO currency_rates (base, currency_one_name, currency_one_rate, currency_two_name, currency_two_rate)
-    VALUES ('${data.base}', '${data.currency_one_name}', ${data.currency_one_rate}, '${data.currency_two_name}', ${data.currency_two_rate})`;
+const insertCurrencyRate = (data, callback) => {
+    const queryInsert = `INSERT INTO currency_rates (time, base, currency_one_name, currency_one_rate, currency_two_name, currency_two_rate)
+    VALUES ('${data.time}', '${data.base}', '${data.currency_one_name}', ${data.currency_one_rate}, '${data.currency_two_name}', ${data.currency_two_rate})`;
 
     db.getConnection((err, conn) => {
         if (err) throw err;
         conn.query(queryInsert, (error) => {
             if (error) throw error;
-            console.log("[MySQL] Table currency_rates is updated with new value.")
+            console.log("[MySQL] Table currency_rates is updated with new value.");
+            return callback(data);
         })
     })
 }

@@ -25,7 +25,7 @@ io.on(socketConfig.EVENTS.CONNECTION, (socket) => {
 });
 
 migrations.migrateTables();
-//currencyService.fetchCurrencyRatesFromApi() TODO: Uncomment this
+currencyService.fetchCurrencyRatesFromApi();
 
 server.listen(serverConfig.PORT);
 console.log(`[INFO] Server is running on port: ${serverConfig.PORT}`);

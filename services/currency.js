@@ -1,9 +1,11 @@
 const axios = require('axios');
 const api = require('../config/api');
 const currencyRates = require('../database/currency-rates');
+const currencyRatesSocket = require('../socket/currency-rates');
 
 const ETHEREUM = 'ETH';
 const BITCOIN = 'BTC';
+let interval = null;
 
 /*
  * Fetch currency rates from RAPID API.
@@ -27,7 +29,10 @@ const fetchCurrencyRatesFromApi = () => {
         .catch((error) => {
             console.error(error);
         })
-    return setInterval(fetchCurrencyRatesFromApi, api.API_CALL_INTERVAL);
+
+    clearInterval(interval);
+    interval = setInterval(fetchCurrencyRatesFromApi, api.API_CALL_INTERVAL);
+    return interval;
 };
 
 /*
@@ -43,15 +48,16 @@ const handleCurrencyRatesData = (data) => {
     databaseData.base = data.base ?? '';
 
     if (data.rates) {
+        databaseData.time = new Date().toISOString().slice(0, 19).replace('T', ' ');
         databaseData.currency_one_name = data.rates[BITCOIN] ? BITCOIN : '';
         databaseData.currency_one_rate = data.rates[BITCOIN] ?? 0;
         databaseData.currency_two_name = data.rates[ETHEREUM] ? ETHEREUM : '';
         databaseData.currency_two_rate = data.rates[ETHEREUM] ?? 0;
     }
 
-    currencyRates.insertCurrencyRate(databaseData);
+    currencyRates.insertCurrencyRate(databaseData, currencyRatesSocket.sendUpdatedCurrencyRatesToClient);
 }
 
 module.exports = {
-    fetchCurrencyRatesFromApi: fetchCurrencyRatesFromApi,
+    fetchCurrencyRatesFromApi,
 }

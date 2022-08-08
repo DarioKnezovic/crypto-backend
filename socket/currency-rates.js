@@ -53,10 +53,19 @@ const sendHistoryOfExchanges = () => {
     })
 }
 
+/*
+ * Send updated currency rates to client
+ */
+const sendUpdatedCurrencyRatesToClient = (data) => {
+    if (!socketClient) return;
+    socketClient.emit(socketConfig.EVENTS.CURRENCY_RATES_UPDATE, data)
+}
+
 module.exports = {
     saveSocketClient,
     sendCurrencyRatesToClient,
     receiveSavedExchange,
     sendHistoryOfExchanges,
-    receiveOfferForAllExchanges
+    receiveOfferForAllExchanges,
+    sendUpdatedCurrencyRatesToClient
 }
