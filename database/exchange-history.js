@@ -23,6 +23,7 @@ const migrateTable = () => {
             if (error) throw error;
             console.log("[MySQL] Table exchange_history is migrated.")
         })
+        conn.release()
     });
 };
 
@@ -41,6 +42,7 @@ const fetchAllExchanges = (callback) => {
             if (error) throw error;
             return callback(result);
         })
+        conn.release()
     })
 }
 
@@ -60,6 +62,7 @@ const insertNewExchange = (data, callback) => {
             if (error) throw error;
             return callback();
         })
+        conn.release()
     })
 }
 

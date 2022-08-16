@@ -22,6 +22,7 @@ const migrateTable = () => {
             if (error) throw error;
             console.log("[MySQL] Table currency_rates is migrated.")
         })
+        conn.release()
     });
 };
 
@@ -42,6 +43,7 @@ const insertCurrencyRate = (data, callback) => {
             console.log("[MySQL] Table currency_rates is updated with new value.");
             return callback(data);
         })
+        conn.release()
     })
 }
 
@@ -60,6 +62,7 @@ const getLatestCurrencyRates = (callback) => {
             if (error) throw error;
             return callback(result[0]);
         })
+        conn.release()
     })
 }
 
