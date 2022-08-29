@@ -32,7 +32,7 @@ const sendCurrencyRatesToClient = (data) => {
  * @return void
  */
 const receiveSavedExchange = () => {
-    socketClient.on(socketConfig.EVENTS.SAVE_EXCHANGE, (data) => exchangeHistoryDB.insertNewExchange(data, sendHistoryOfExchanges))
+    socketClient.on(socketConfig.EVENTS.SAVE_EXCHANGE, (data) => exchangeHistoryDB.insertNewExchange(data).then(sendHistoryOfExchanges))
 }
 
 /*
@@ -48,9 +48,8 @@ const receiveOfferForAllExchanges = () => {
  * @return void
  */
 const sendHistoryOfExchanges = () => {
-    exchangeHistoryDB.fetchAllExchanges((data) => {
-        socketClient.emit(socketConfig.EVENTS.EXCHANGES_HISTORY, data)
-    })
+    exchangeHistoryDB.fetchAllExchanges()
+        .then(data => socketClient.emit(socketConfig.EVENTS.EXCHANGES_HISTORY, data))
 }
 
 /*

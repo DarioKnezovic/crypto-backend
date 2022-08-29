@@ -55,7 +55,7 @@ const handleCurrencyRatesData = (data) => {
         databaseData.currency_two_rate = data.rates[ETHEREUM] ?? 0;
     }
 
-    currencyRates.insertCurrencyRate(databaseData, currencyRatesSocket.sendUpdatedCurrencyRatesToClient);
+    currencyRates.insertCurrencyRate(databaseData).then(currencyRatesSocket.sendUpdatedCurrencyRatesToClient);
 }
 
 module.exports = {

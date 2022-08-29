@@ -18,7 +18,8 @@ const io = socketIO(server, socketConfig.SERVER_OPTIONS);
 io.on(socketConfig.EVENTS.CONNECTION, (socket) => {
     console.log("[Socket.IO] Someone is connected!");
     currencyRatesSocket.saveSocketClient(socket, () => {
-        currencyRates.getLatestCurrencyRates(data => currencyRatesSocket.sendCurrencyRatesToClient(data));
+        currencyRates.getLatestCurrencyRates()
+            .then((data) => currencyRatesSocket.sendCurrencyRatesToClient(data));
         currencyRatesSocket.receiveSavedExchange();
         currencyRatesSocket.receiveOfferForAllExchanges();
     })

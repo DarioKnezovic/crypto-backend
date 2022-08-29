@@ -29,20 +29,21 @@ const migrateTable = () => {
 
 /*
  * Get all exchanges and prepare it for emitting.
- * @param callback Function
  *
  * @return void
  */
-const fetchAllExchanges = (callback) => {
+const fetchAllExchanges = () => {
     const query = 'SELECT * FROM exchange_history';
 
-    db.getConnection((err, conn) => {
-        if (err) throw err;
-        conn.query(query, (error, result) => {
-            if (error) throw error;
-            return callback(result);
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, conn) => {
+            if (err) throw reject(err);
+            conn.query(query, (error, result) => {
+                if (error) throw reject(error);
+                resolve(result);
+            })
+            conn.release()
         })
-        conn.release()
     })
 }
 
@@ -52,17 +53,19 @@ const fetchAllExchanges = (callback) => {
  *
  * @return void
  */
-const insertNewExchange = (data, callback) => {
+const insertNewExchange = (data) => {
     const insertQuery = `INSERT INTO exchange_history (currency_from, amount_one, currency_to, amount_two, type)
                         VALUES ('${data.currency_from}', ${data.amount_one}, '${data.currency_to}', ${data.amount_two}, 'Exchanged')`;
 
-    db.getConnection((err, conn) => {
-        if (err) throw err;
-        conn.query(insertQuery, (error, _) => {
-            if (error) throw error;
-            return callback();
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, conn) => {
+            if (err) throw reject(err);
+            conn.query(insertQuery, (error, _) => {
+                if (error) throw reject(error);
+                resolve();
+            })
+            conn.release()
         })
-        conn.release()
     })
 }
 

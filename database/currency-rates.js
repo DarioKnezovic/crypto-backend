@@ -32,37 +32,40 @@ const migrateTable = () => {
  *
  * @return void
  */
-const insertCurrencyRate = (data, callback) => {
+const insertCurrencyRate = (data) => {
     const queryInsert = `INSERT INTO currency_rates (time, base, currency_one_name, currency_one_rate, currency_two_name, currency_two_rate)
     VALUES ('${data.time}', '${data.base}', '${data.currency_one_name}', ${data.currency_one_rate}, '${data.currency_two_name}', ${data.currency_two_rate})`;
 
-    db.getConnection((err, conn) => {
-        if (err) throw err;
-        conn.query(queryInsert, (error) => {
-            if (error) throw error;
-            console.log("[MySQL] Table currency_rates is updated with new value.");
-            return callback(data);
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, conn) => {
+            if (err) throw reject(err);
+            conn.query(queryInsert, (error) => {
+                if (error) throw reject(error);
+                console.log("[MySQL] Table currency_rates is updated with new value.");
+                resolve(data);
+            })
+            conn.release()
         })
-        conn.release()
     })
 }
 
 /*
  * Get the latest currency rate from database
- * @param callback Function
  *
  * @return object
  */
-const getLatestCurrencyRates = (callback) => {
+const getLatestCurrencyRates = () => {
     const selectQuery = `SELECT * FROM currency_rates ORDER BY time DESC LIMIT 1`;
 
-    db.getConnection((err, conn) => {
-        if (err) throw err;
-        conn.query(selectQuery, (error, result) => {
-            if (error) throw error;
-            return callback(result[0]);
+    return new Promise((resolve, reject) => {
+        db.getConnection((err, conn) => {
+            if (err) reject(err);
+            conn.query(selectQuery, (error, result) => {
+                if (error) throw reject(error);
+                resolve(result[0]);
+            })
+            conn.release()
         })
-        conn.release()
     })
 }
 
